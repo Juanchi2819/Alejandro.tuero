@@ -1,301 +1,460 @@
-
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Conversaciones por Cliente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Chats con Gemini</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background-color: #f2f2f2; text-align: left; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        h2 { background-color: #4CAF50; color: white; padding: 10px; }
+        /* --- Paleta de Colores --- */
+        :root {
+            --background: #f8f7fa;
+            --foreground: #3d3c4f;
+            --card: #ffffff;
+            --card-foreground: #3d3c4f;
+            --popover: #ffffff;
+            --popover-foreground: #3d3c4f;
+            --primary: #8a79ab;
+            --primary-foreground: #f8f7fa;
+            --secondary: #dfd9ec;
+            --secondary-foreground: #3d3c4f;
+            --muted: #dcd9e3;
+            --muted-foreground: #6b6880;
+            --accent: #e6a5b8;
+            --accent-foreground: #4b2e36;
+            --destructive: #d95c5c;
+            --destructive-foreground: #f8f7fa;
+            --border: #cec9d9;
+            --input: #eae7f0;
+            --ring: #8a79ab;
+            --sidebar: #f1eff5;
+            --sidebar-foreground: #3d3c4f;
+            --sidebar-primary: #8a79ab;
+            --sidebar-primary-foreground: #f8f7fa;
+            --sidebar-accent: #e6a5b8;
+            --sidebar-accent-foreground: #4b2e36;
+            --sidebar-border: #d7d2e0;
+            --font-sans: 'Geist', sans-serif;
+            --font-serif: "Lora", Georgia, serif;
+            --font-mono: "Fira Code", "Courier New", monospace;
+            --radius: 0.5rem;
+            --shadow-md: 1px 2px 5px 1px hsl(0 0% 0% / 0.06), 1px 2px 4px 0px hsl(0 0% 0% / 0.06);
+            --shadow-lg: 1px 2px 5px 1px hsl(0 0% 0% / 0.06), 1px 4px 6px 0px hsl(0 0% 0% / 0.06);
+        }
+
+        .dark {
+            --background: #1a1823;
+            --foreground: #e0ddef;
+            --card: #232030;
+            --card-foreground: #e0ddef;
+            --popover: #232030;
+            --popover-foreground: #e0ddef;
+            --primary: #a995c9;
+            --primary-foreground: #1a1823;
+            --secondary: #5a5370;
+            --secondary-foreground: #e0ddef;
+            --muted: #242031;
+            --muted-foreground: #a09aad;
+            --accent: #372e3f;
+            --accent-foreground: #f2b8c6;
+            --destructive: #e57373;
+            --destructive-foreground: #1a1823;
+            --border: #302c40;
+            --input: #2a273a;
+            --ring: #a995c9;
+            --sidebar: #16141e;
+            --sidebar-foreground: #e0ddef;
+            --sidebar-primary: #a995c9;
+            --sidebar-primary-foreground: #1a1823;
+            --sidebar-accent: #372e3f;
+            --sidebar-accent-foreground: #f2b8c6;
+            --sidebar-border: #2a273a;
+        }
+
+        /* --- Estilos Generales del Body --- */
+        body {
+            background-color: var(--background);
+            font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            color: var(--foreground);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- Layout --- */
+        .app-container { display: flex; width: 100%; height: 100%; }
+
+        .side-menu {
+            width: 280px;
+            background-color: var(--sidebar);
+            padding: 20px;
+            border-right: 1px solid var(--sidebar-border);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* --- Estilos del Menú Lateral --- */
+        .side-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .side-menu-header h2 {
+            margin-top: 0;
+            color: var(--sidebar-primary);
+            border-bottom: 2px solid var(--sidebar-primary);
+            padding-bottom: 10px;
+        }
+
+        #menu-close-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--sidebar-foreground);
+            cursor: pointer;
+        }
+        
+        .conversation-menu-group { margin-bottom: 10px; }
+        .date-header {
+            background-color: var(--muted);
+            color: var(--muted-foreground);
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .date-header:hover { background-color: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
+        .date-header::after { content: '▶'; font-size: 0.8em; transition: transform 0.3s; }
+        .date-header.open::after { transform: rotate(90deg); }
+        .conversation-list {
+            padding-left: 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .conversation-list.open { max-height: 500px; transition: max-height 0.5s ease-in; }
+        .conversation-link {
+            display: block; padding: 8px 10px; cursor: pointer;
+            border-radius: var(--radius); text-decoration: none;
+            color: var(--sidebar-foreground); margin-top: 5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .conversation-link:hover { background-color: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
+        .conversation-link.active {
+            background-color: var(--sidebar-primary);
+            color: var(--sidebar-primary-foreground);
+            font-weight: bold;
+        }
+
+        /* --- Ventana Principal del Chat --- */
+        .chat-container {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        /* --- Encabezado del Chat --- */
+        .chat-header {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        #menu-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary-foreground);
+            cursor: pointer;
+            padding: 0;
+            margin-right: 15px;
+        }
+        
+        .chat-header .avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            margin-right: 15px;
+            background-image: url('https://placehold.co/40x40/E0E0E0/333?text=C');
+            background-size: cover; background-position: center;
+        }
+        
+        .chat-header .contact-info .name { font-weight: 600; font-size: 1.1em; }
+        .chat-header .contact-info .status { font-size: 0.8em; opacity: 0.85; }
+
+        /* --- Área de Mensajes --- */
+        .chat-messages {
+            flex-grow: 1; padding: 20px 10px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 12px;
+            background-color: var(--secondary);
+            background-image: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg');
+        }
+        
+        .dark .chat-messages {
+            background-image: linear-gradient(rgba(26, 24, 35, 0.85), rgba(26, 24, 35, 0.85)), url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg');
+        }
+
+        /* --- Estilo Base de la Burbuja de Mensaje --- */
+        .message-bubble {
+            max-width: 80%; padding: 8px 12px; border-radius: var(--radius);
+            position: relative; box-shadow: var(--shadow-md);
+            word-wrap: break-word; display: flex; flex-direction: column;
+        }
+
+        .human { background-color: var(--card); color: var(--card-foreground); align-self: flex-start; border-top-left-radius: 0; }
+        .ai { background-color: var(--primary); color: var(--primary-foreground); align-self: flex-end; border-top-right-radius: 0; }
+        .message-content { font-size: 0.95em; line-height: 1.4; margin-bottom: 5px; }
+        .timestamp { font-size: 0.7em; color: var(--muted-foreground); align-self: flex-end; }
+        
+        /* --- Toggle de Tema --- */
+        .theme-toggle-container {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--sidebar-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--sidebar-foreground);
+        }
+        #theme-toggle-btn {
+            background: var(--muted); color: var(--muted-foreground);
+            border: 1px solid var(--border); border-radius: 50%;
+            width: 40px; height: 40px; cursor: pointer; font-size: 1.2em;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        body.menu-open .overlay {
+            display: block;
+        }
+        
+        /* --- Diseño Responsivo --- */
+        @media (max-width: 768px) {
+            body.menu-open {
+                overflow: hidden;
+            }
+            #menu-toggle-btn, #menu-close-btn {
+                display: block;
+            }
+            .side-menu {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 85%;
+                max-width: 320px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 1000;
+                border-right: 1px solid var(--sidebar-border);
+            }
+            body.menu-open .side-menu {
+                transform: translateX(0);
+            }
+            .main-content {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
-<body>
-    <h1>Conversaciones agrupadas por cliente (session_id)</h1>
-<h2>Cliente: 5493487475469</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola! Excelente decisión. Te comento cómo funciona. La consulta de evaluación tiene un valor total de $20.000. Para reservar tu turno, abonás ahora esta seña de $10.000 y los $10.000 restantes los pagás el día que venís al consultorio.
-
-Lo más importante es que si después decidís avanzar con la cirugía, el total de esos $20.000 se te descuenta del valor final del procedimiento.
-
-Para enviarte los datos correctos, decime por favor, preferís abonar la seña en pesos argentinos o en dólares?</td></tr><tr><td>3</td><td>Cliente</td><td>Hola mucho gusto, prefiero abonar la seña en pesos Argentinos</td></tr><tr><td>4</td><td>Asistente</td><td>Perfecto. Para abonar en pesos, el alias de la cuenta es **alejandro.tuero** (Banco Galicia).
-
-Una vez que hagas la transferencia, te pido por favor que me envíes por acá una captura de pantalla del comprobante. Es muy importante que sea una imagen y no un PDF, porque nuestro sistema solo puede verificar capturas para poder avanzar.
-
-Quedo a la espera para seguir con el agendamiento de tu turno. Gracias</td></tr><tr><td>5</td><td>Cliente</td><td>Mensaje para paciente: ✅ ¡Excelente! Recibimos tu comprobante de transferencia por $10.000 ARS. ¡Muchas gracias por tu pago! </td></tr><tr><td>6</td><td>Asistente</td><td>Excelente, me confirman que recibimos tu pago correctamente. ¡Muchas gracias! Ahora sí, procedamos a agendar tu turno.
-
-Para dejar todo listo, necesitaría que me pases tu nombre completo y tu correo electrónico. Y por último, para completar tu ficha, me recordarías tu edad?
-
-Además, contame si preferís que la consulta sea virtual o presencial.</td></tr><tr><td>7</td><td>Cliente</td><td>Mi nombre es: Amelia Alejandra Roh
-Mail: alejandraroh1@hotmail.com 
-Edad: 57 años 
-Prefiero consulta presencial</td></tr><tr><td>8</td><td>Asistente</td><td>Perfecto, Amelia. Muchas gracias por la información.
-
-Ya con tus datos agendados, decime por favor en cuál de nuestros dos consultorios te quedaría más cómodo tener la consulta: en Capital Federal o en San Pedro?</td></tr><tr><td>9</td><td>Cliente</td><td>En San Pedro</td></tr><tr><td>10</td><td>Asistente</td><td>Perfecto, Amelia. Para poder buscar un turno, necesitaría que me orientes un poco con tus fechas. Tenés alguna preferencia de día o semana para la consulta en San Pedro?</td></tr><tr><td>11</td><td>Cliente</td><td>Puedo los días Lunes y Viernes</td></tr><tr><td>12</td><td>Asistente</td><td>Amelia, te pido disculpas. Estoy teniendo un inconveniente técnico con nuestro sistema de agendas y no puedo ver los turnos disponibles en este momento.
-
-Pero no te preocupes, ya dejé todos tus datos guardados y tu pago registrado.
-
-En cuanto se solucione, yo misma te voy a contactar por acá para pasarte los horarios disponibles para un lunes en San Pedro y terminar de coordinar el turno.
-
-Te pido disculpas por la demora y te agradezco la paciencia.</td></tr><tr><td>13</td><td>Cliente</td><td>Al contrario gracias a vos por todo!! 
-Espero tu respuesta.
-Saludos!!</td></tr><tr><td>14</td><td>Asistente</td><td>De nada, Amelia! Gracias a vos por la comprensión.
-
-Nos hablamos pronto. Saludos</td></tr><tr><td>15</td><td>Cliente</td><td>El tiempo de espera ha finalizado. El doctor ya ha evaluado las fotos. Tu tarea ahora es ejecutar la FASE 4 - ENTREGA DEVOLUCIÓN. Usa la herramienta 'agente_conocimiento' para obtener la devolución médica y comunícasela al paciente de forma natural.</td></tr><tr><td>16</td><td>Asistente</td><td>Hola Amelia, cómo estás? Te escribo porque ya se solucionó el inconveniente con el sistema de agendas.
-
-Estuve revisando y tengo dos opciones para vos en la sede de San Pedro:
-
-*   **Viernes 23 de agosto a las 16:00 hs.**
-*   **Lunes 26 de agosto a las 11:00 hs.**
-
-Cuál de los dos te quedaría mejor?</td></tr><tr><td>17</td><td>Cliente</td><td>Puedo los días Lunes y Viernes</td></tr><tr><td>18</td><td>Asistente</td><td>Perfecto, Amelia. Entonces, para confirmar, ¿cuál de estos dos turnos te agendo?
-
-*   **Viernes 23 de agosto a las 16:00 hs.**
-*   **Lunes 26 de agosto a las 11:00 hs.**
-
-Avisame cuál preferís y ya te lo dejo reservado.</td></tr><tr><td>19</td><td>Cliente</td><td>Me quedaría mejor el día Lunes, pero es 25</td></tr><tr><td>20</td><td>Asistente</td><td>Tenés toda la razón, Amelia, el lunes es 25. Mil disculpas por el error en la fecha.
-
-Entonces, te agendo para el **Lunes 25 de agosto a las 11:00 hs** en la sede de San Pedro. Te parece bien?</td></tr><tr><td>21</td><td>Cliente</td><td>Me parece perfecto, muchísimas gracias !!</td></tr><tr><td>22</td><td>Asistente</td><td>Perfecto Amelia! Ya quedó tu turno agendado.
-
-Te confirmo: **Lunes 25 de agosto a las 11:00 hs** en el consultorio de San Pedro.
-
-La dirección es **Mitre 1200**.
-
-Cualquier cosita, no dudes en escribirme por acá. Que tengas un excelente día</td></tr><tr><td>23</td><td>Cliente</td><td>Gracias, igualmente !!</td></tr><tr><td>24</td><td>Asistente</td><td>De nada, Amelia! Nos vemos el lunes. Que tengas un buen día</td></tr></table><h2>Cliente: 5491138775894</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, cómo estás? Soy Camila, la asistente del Dr. Alejandro Tuero. ¡Claro que sí! Para poder darte un valor aproximado, necesitaría saber dos cositas: qué zona de tu cuerpo te gustaría mejorar o qué procedimiento tenés en mente, y cuál es tu edad.</td></tr></table><h2>Cliente: 5491173639049</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, ¿cómo estás? Soy Camila, la asistente del Dr. Alejandro Tuero.
-
-¡Claro que sí! Para poder darte una primera orientación y un valor aproximado, necesitaría que me cuentes dos cositas: ¿qué zona del cuerpo te gustaría mejorar y qué edad tenés?</td></tr><tr><td>3</td><td>Cliente</td><td>Buen día , bien bien
-Las mamas
-Tengo 30 años</td></tr><tr><td>4</td><td>Asistente</td><td>Buenísimo, gracias por la información.
-
-Para que te des una idea, los procedimientos de mamas con el Dr. Tuero generalmente tienen un valor que va de 2.000 a 4.000 dólares. El precio final siempre depende de la anatomía de cada paciente y de lo que se necesite hacer.
-
-Como es una zona muy personal, en esta etapa no pedimos fotos. Para que el Dr. Tuero pueda entender un poco mejor tu caso, contame, ¿el cambio que buscás está relacionado con algún embarazo o con cambios de peso importantes que hayas tenido?</td></tr><tr><td>5</td><td>Cliente</td><td>Ah bien , claro por que fui mamá y bueno no me siento cómoda con mis pechos</td></tr><tr><td>6</td><td>Asistente</td><td>Muchas gracias por compartir esa información, es muy útil para el doctor. Te entiendo perfectamente, es algo muy común que nos comentan las pacientes que han sido mamás.
-
-Por lo que me contás, todo indica que sos una excelente candidata para lograr el cambio que buscás. El siguiente paso definitivo es una consulta de evaluación con el Dr. Tuero para que pueda darte una recomendación profesional y detallada.
-
-¿Te parece bien si avanzamos y te comento el valor de la consulta para poder coordinar una?</td></tr></table><h2>Cliente: 5491160386658</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>¡Excelente! Gracias por tu interés en reservar con el Dr. Tuero. Te comento que la agenda de estos días está súper completa. Me figura que podríamos tener lugar para el miércoles de la semana que viene. ¿Te quedaría bien? Así te busco los horarios disponibles.</td></tr></table><h2>Cliente: 5492657263994</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, ¿cómo estás? Soy Camila, la asistente del Dr. Alejandro Tuero.
-
-¡Claro que sí! Para poder darte un valor aproximado y la mejor recomendación, contame un poco más, ¿qué procedimiento te interesa o qué zona de tu cuerpo te gustaría mejorar? Y, si no es molestia, ¿qué edad tenés?</td></tr></table><h2>Cliente: 16465894168</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>*Hit the ground running with conversations that drive conversions*
-
-Start meaningful conversations and turn interest into sales with click-to-WhatsApp ads. To get started, you'll need to connect your Facebook Page to a WhatsApp Business Platform phone number. Follow these steps to dive in: https://business.facebook.com/business/help/4631406400243963 . Then, you'll be ready to add a button to your Facebook Page and create ads that lead directly to WhatsApp, helping boost engagement for your business. If you've already connected your Facebook Page to a WhatsApp Business Platform phone number, please get started with the link below.
-
-*Get started now:* https://www.facebook.com/business/m/ctwa</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, soy Camila, la asistente del Dr. Alejandro Tuero.
-
-Decime, en qué te puedo ayudar?</td></tr><tr><td>3</td><td>Cliente</td><td>*Start the conversation with your next customer using ads that click to WhatsApp*
-
-Connect with highly qualified leads by bringing them directly to your WhatsApp chat thread. Use ads that click to WhatsApp to engage, support, and inform customers — within the app they already know and love.
-
-*Get started:* https://www.facebook.com/business/m/ctwa
-</td></tr><tr><td>4</td><td>Asistente</td><td>Hola, creo que esto es un mensaje automático de la plataforma.
-
-Soy Camila, la asistente del Dr. Tuero. Estoy para ayudarte con consultas sobre cirugías.
-
-En qué te puedo asesorar?</td></tr></table><h2>Cliente: 5492984121177</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, cómo estás?
-Claro, te puedo dar un valor de referencia.
-
-Para que tengas una idea general, los procedimientos del Dr. Tuero suelen ir de 1.000 a 10.000 dólares. El valor final siempre depende de la anatomía de cada paciente.
-
-Para poder orientarte mejor, contame qué zona de tu cuerpo te gustaría mejorar?</td></tr><tr><td>3</td><td>Cliente</td><td>Sí, mirá, me gustaría mejorar la parte del abdomen.</td></tr><tr><td>4</td><td>Asistente</td><td>Entendido.
-Los procedimientos en la zona del abdomen van desde los 2.000 a los 10.000 dólares. La diferencia de valor depende mucho del tipo de cirugía que necesites, si es una lipoescultura, una dermolipectomía o una combinación de ambas.
-
-Para orientar un poco al doctor, el cambio que buscás está relacionado a algún embarazo o a cambios de peso?</td></tr></table><h2>Cliente: 5491135996153</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Excelente iniciativa! Para buscar los mejores horarios disponibles, primero decime qué procedimiento o zona del cuerpo te gustaría tratar.</td></tr></table><h2>Cliente: 5493329554652</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola tengo 40 años y me gustaría sacarme el colgajo de la panza
-</td></tr><tr><td>2</td><td>Cliente</td><td>X embarazos
-</td></tr><tr><td>3</td><td>Asistente</td><td>Dale, gracias por la info.
-
-Para que te des una idea, los procedimientos en la zona del abdomen van de 2.000 a 10.000 dólares. El valor final siempre depende de la anatomía de cada paciente y de lo que se necesite hacer.
-
-Al ser una zona personal, no pedimos fotos ahora. Para orientar al doc, contame si el cambio que buscás está relacionado con embarazo o cambios de peso.</td></tr><tr><td>4</td><td>Asistente</td><td>Gracias por compartir esa información.
-
-Con lo que me contás, el paso que sigue es una consulta de evaluación con el Dr. Tuero para que pueda darte una recomendación profesional.
-
-Querés que vea qué turnos tiene disponibles?</td></tr><tr><td>5</td><td>Asistente</td><td>Perfecto, en San Pedro tengo disponible el lunes 18 de agosto a las 11:00, 11:30 o 12:00 hs.
-
-Te sirve alguno de esos horarios?</td></tr><tr><td>6</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco.
-</td></tr><tr><td>7</td><td>Asistente</td><td>Hola, cómo estás? Soy Camila, la asistente del Dr. Tuero.
-
-Claro que sí. Para darte un valor aproximado, primero necesito saber qué parte del cuerpo te gustaría mejorar y qué edad tenés.</td></tr><tr><td>8</td><td>Cliente</td><td>Si xfavor
-</td></tr><tr><td>9</td><td>Asistente</td><td>Dale. Tengo estos turnos disponibles para una consulta virtual:
-
-- Lunes 18 de agosto a las 11:00 hs
-- Lunes 18 de agosto a las 11:30 hs
-- Lunes 18 de agosto a las 12:00 hs
-
-Te queda bien alguno de esos?</td></tr><tr><td>10</td><td>Cliente</td><td>Solo virtual atiende?
-</td></tr><tr><td>11</td><td>Asistente</td><td>No, también tenemos la opción de consulta presencial.
-
-Atendemos en Capital Federal y en San Pedro.
-
-Cuál de las dos te quedaría más cómoda?</td></tr><tr><td>12</td><td>Cliente</td><td>San pedro</td></tr><tr><td>13</td><td>Cliente</td><td>A las 11hs</td></tr><tr><td>14</td><td>Asistente</td><td>Genial, agendamos para el lunes 18 de agosto a las 11:00 hs en San Pedro.
-
-Para dejar todo listo, necesitaría tu nombre completo y un correo electrónico, por favor.</td></tr><tr><td>15</td><td>Cliente</td><td>Debora Daniela parra 
-Deboradaniela488@gmail.com</td></tr><tr><td>16</td><td>Asistente</td><td>Excelente, Debora. Ya quedó agendada tu consulta presencial para el lunes 18 de agosto a las 11:00 hs.
-
-La dirección del consultorio en San Pedro es Pellegrini 1525.
-
-Te esperamos!
-{"fase":"consulta_agendada","paciente":"Debora Daniela parra","fecha":"2025-08-18","hora":"11:00","modalidad":"presencial","sede":"San Pedro"}</td></tr></table><h2>Cliente: 5491125629133</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Excelente. Tengo estos próximos turnos: lunes 18 de agosto a las 11:00, 11:30 o 12:00 hs.
-
-Para reservar y asegurar tu descuento, necesitás abonar la seña de $10.000 que se descuenta del valor final.
-
-Podés transferir al alias *alejandro.tuero*.
-
-Cuando la hagas, enviame una captura de pantalla del comprobante (no PDF). Apenas llegue, reservo el horario que elijas.
-
-Cuál preferís?</td></tr></table><h2>Cliente: 5491170508815</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Qué bueno escucharte tan decidida! Me encanta esa actitud.
-
-Para avanzar, primero decime qué día y horario te vendría mejor para la consulta, así busco opciones disponibles.
-
-Buscas un día de semana, o preferís un sábado?</td></tr></table><h2>Cliente: 5492920700533</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>hola quiero una consulta básica por whatsapp para saber presupuestos para el procedimiento que estoy buscando</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, cómo estás? Soy Camila, la asistente del Dr. Tuero.
-
-Para que tengas una idea general, los procedimientos de la especialidad del Dr. Tuero suelen ir de 1.000 a 10.000 USD.
-
-El valor final siempre depende de la anatomía de cada paciente.
-
-Para poder darte un número más aproximado, decime qué zona te gustaría mejorar y qué edad tenés.</td></tr><tr><td>3</td><td>Cliente</td><td>quiero para abdomen y mamas
-tengo 38</td></tr><tr><td>4</td><td>Asistente</td><td>Gracias por la información.
-
-Mirá, para que te des una idea, los procedimientos de mamas van de 2.000 a 4.000 USD y los de abdomen de 2.000 a 10.000 USD.
-
-El valor final depende de la complejidad y de si se realizan en una misma cirugía.
-
-Al ser una zona personal, no pedimos fotos ahora. Para orientar un poco al doctor, contame si el cambio que buscás está relacionado con algún embarazo o cambios de peso.
-
-Te pregunto esto para entender mejor el punto de partida.</td></tr><tr><td>5</td><td>Cliente</td><td>en capital</td></tr><tr><td>6</td><td>Asistente</td><td>Excelente. En Capital Federal tengo turno para el próximo jueves 21 de agosto a las 17:00 o 17:30 hs.
-
-Para reservar, se abona una seña de $10.000 que luego se descuenta del valor final de la cirugía.
-
-Podés transferir al alias alejandro.tuero. Cuando la hagas, enviame una captura de pantalla del comprobante.
-
-Apenas llegue, te reservo el horario que elijas.
-
-Cuál de los dos te queda mejor?</td></tr><tr><td>7</td><td>Cliente</td><td>entiendo
-si estuve enmbarazada</td></tr><tr><td>8</td><td>Asistente</td><td>Gracias por compartir esa información.
-
-Con lo que me contás, el paso clave ahora es tener una consulta de evaluación con el Dr. Tuero.
-
-Ahí él va a poder darte una recomendación profesional y detallada para tu caso.
-
-Querés que vea qué turnos tiene disponibles y te paso opciones?</td></tr><tr><td>9</td><td>Cliente</td><td>dale por favor
-pero donde están?</td></tr><tr><td>10</td><td>Asistente</td><td>El Dr. Tuero atiende en dos consultorios.
-
-Uno está en Capital Federal, en la Av. Córdoba 4190.
-
-El otro en San Pedro, en Pellegrini 1525.
-
-Cuál de las dos sedes te quedaría mejor?</td></tr><tr><td>11</td><td>Cliente</td><td>me queda mejor para las 17
-no le puedo pagar en consulta?</td></tr><tr><td>12</td><td>Asistente</td><td>Entiendo tu consulta.
-
-La seña se abona antes para poder confirmar el turno en la agenda del doctor. Es la única manera de dejar el horario reservado para vos.
-
-Una vez que me envíes el comprobante, el turno de las 17:00 hs queda agendado a tu nombre.
-
-Avisame si podés hacerlo.</td></tr><tr><td>13</td><td>Cliente</td><td>bueno dale ya te pasé</td></tr><tr><td>14</td><td>Asistente</td><td>Buenísimo, ahora aguardo que me llegue la confirmación del sistema y te reservo el turno.
-
-Apenas la reciba te escribo por acá.</td></tr><tr><td>15</td><td>Cliente</td><td>CONTEXTO: El tiempo de espera de 30 minutos ha finalizado. Se asume que el Dr. Tuero ya ha revisado las fotos del paciente.  
-OBJETIVO: Tu misión es transicionar la conversación desde la espera hacia el agendamiento de una consulta. NO debes dar un diagnóstico ni interpretar las fotos.  
-ACCIÓN: Ejecuta la lógica del "Playbook 2: Invitación a consulta post-evaluación". Agradece al paciente por la paciencia, explícale que para recibir una recomendación profesional y detallada el siguiente paso es la consulta, y cierra proactivamente con una pregunta para coordinar y buscar horarios.</td></tr><tr><td>16</td><td>Asistente</td><td>Gracias por la paciencia.
-
-El Dr. Tuero ya revisó tu caso. Para darte una recomendación profesional y detallada, el paso clave es tener una consulta de evaluación.
-
-Te parece si coordinamos? Puedo ver horarios ahora.</td></tr></table><h2>Cliente: 5491138452843</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola! Excelente decisión.
-Para avanzar, necesito algunos datos.
-
-Nombre completo y correo electrónico, por favor.
-Y decime, preferís consulta virtual o presencial?
-</td></tr></table><h2>Cliente: 5491126123620</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, cómo estás? Soy Camila, la asistente del Dr. Tuero.
-
-Claro, te puedo dar un valor de referencia. Para que tengas una idea general, los procedimientos del Dr. Tuero suelen ir de 1.000 a 10.000 dólares.
-
-Para poder darte un número más preciso, contame qué zona de tu cuerpo te gustaría mejorar y qué edad tenés?</td></tr><tr><td>3</td><td>Cliente</td><td>Hola buenos días
-Si Me Gustaría Mejorar Lo Que Es El Adomen Y El Levantamiento De Glúteos 
-Tengo 21 años
-Soy de Buenos aires</td></tr><tr><td>4</td><td>Asistente</td><td>Gracias por la información.
-
-Para que te hagas una idea, los valores de referencia son:
-- Para la zona del abdomen, el valor va de 2.000 a 10.000 dólares.
-- Para el levantamiento de glúteos, de 2.000 a 6.000 dólares.
-
-El precio final siempre depende de la anatomía de cada paciente.
-
-Como son zonas muy personales, no te voy a pedir fotos ahora. Para poder orientar mejor al doctor, me podrías contar dos cosas?
-
-Primero, el cambio que buscás en el abdomen está relacionado con algún embarazo o cambios de peso?
-Y segundo, para los glúteos, tu objetivo principal es ganar volumen o mejorar la forma y levantarlos?</td></tr></table><h2>Cliente: 5491160335775</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco. Sería la abdominosplastia</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, cómo estás?
-
-Para que te des una idea, una abdominoplastia puede ir desde los 2.000 a los 10.000 dólares. El valor final siempre depende de la anatomía de cada paciente.
-
-Para poder darte un número más preciso, me decís qué edad tenés?</td></tr><tr><td>3</td><td>Cliente</td><td>29 años
-10 millones de dólares?
-Perdón mi ignorancia</td></tr><tr><td>4</td><td>Asistente</td><td>No, por favor! Son diez mil dólares, no diez millones. El rango es de 2.000 a 10.000 USD.
-
-Para darte el valor exacto para vos, lo ideal es una consulta con el Dr. Tuero.
-
-Querés que te busque turnos disponibles?</td></tr><tr><td>5</td><td>Cliente</td><td>Donde se encuentran ubicados?</td></tr><tr><td>6</td><td>Asistente</td><td>Atendemos en Capital Federal y en San Pedro.
-
-A vos cuál te quedaría más cómoda?</td></tr></table><h2>Cliente: 5493794501811</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Excelente. Tengo estos horarios disponibles: lunes 18 de agosto a las 11:00, 11:30 o 12:00 hs.
-
-Para reservar tu lugar y asegurar el descuento, es necesario abonar el compromiso de $10.000. Podés transferir al alias 'alejandro.tuero'.
-
-Cuando realices el pago, por favor enviame una captura de pantalla del comprobante (no un PDF). Una vez que me llegue, te confirmo el turno que elijas.
-
-Cuál de estos horarios te queda mejor?</td></tr></table><h2>Cliente: 5491168746505</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola! Buenísimo, hagámoslo.
-
-Tengo estos turnos para este lunes 18 de agosto: 18:00, 18:30 o 19:00 hs.
-
-Para reservar y asegurar tu descuento, es necesario abonar la seña de $10.000 que se descuenta del valor final. Podés transferir al alias alejandro.tuero
-
-Cuando la hagas, enviame una captura de pantalla del comprobante (no PDF). Apenas llegue, reservo el horario que elijas.
-
-Cuál de esos horarios te viene mejor?</td></tr></table><h2>Cliente: 5493875814282</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.
-</td></tr><tr><td>2</td><td>Asistente</td><td>Hola! Qué bueno que te decidiste a dar el primer paso.
-
-Para dejar todo listo, necesitaría algunos datos.
-
-Me pasás tu nombre completo y correo electrónico? Y recordame tu edad por favor.
-
-Así ya te busco los próximos turnos disponibles.</td></tr></table><h2>Cliente: 5493412541772</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola Dr. Tuero ¿realiza rinoplastia en su clinica?</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, cómo estás? Sí, por supuesto. El Dr. Tuero es especialista en rinoplastias.
-
-Para poder darte la mejor recomendación, me dirías por favor qué edad tenés?</td></tr></table><h2>Cliente: 5491131483659</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Sgenial.
-Para reservar, es necesario abonar la seña de $10.000.
-Podés transferir al alias alejandro.tuero.
-Una vez que la hagas, enviame una captura de pantalla del comprobante (no PDF).
-Apenas llegue, te confirmo y buscamos un turno.
-Te parece bien?</td></tr></table><h2>Cliente: 5493518069869</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.
-Quiero saber cuánto salen las mamás?</td></tr><tr><td>2</td><td>Asistente</td><td>Hola! Cómo estás? Te comento, los procedimientos de mamas con el Dr. Tuero tienen un valor que va de 2.000 a 4.000 dólares.
-
-Qué bueno que ya te decidiste a avanzar.
-
-Para poder darte opciones de turnos, decime, preferís una consulta virtual o presencial?</td></tr></table><h2>Cliente: 5491162835703</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Asistente</td><td>Excelente decisión.
-
-Tengo estos horarios disponibles para la consulta de evaluación:
-- Lunes 18 de agosto a las 11:00 hs.
-- Lunes 18 de agosto a las 11:30 hs.
-- Lunes 18 de agosto a las 12:00 hs.
-
-Para confirmar tu turno y asegurar el descuento, el siguiente paso es abonar el compromiso de $10.000. Este monto se descuenta del valor final de la cirugía.
-
-Podés transferir al alias: alejandro.tuero
-
-Cuando realices el pago, por favor enviame una captura de pantalla del comprobante (no un PDF). Una vez que me llegue, dejamos reservado el horario que elijas.
-
-Cuál de esos horarios te queda mejor?</td></tr><tr><td>2</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr></table><h2>Cliente: 5491131149949</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Excelente. Tengo dos turnos disponibles para este lunes 18 de agosto, a las 11:00 o 11:30 hs.
-
-Para reservar tu lugar y asegurar el beneficio, el compromiso es de $10.000 que luego se descuenta del valor final.
-
-Podés transferir al alias: alejandro.tuero
-
-Cuando lo hagas, enviame la captura del comprobante y confirmamos el horario que prefieras. Cuál te queda mejor?</td></tr></table><h2>Cliente: 5491133972467</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero reservar mi compromiso de $10.000 con el Dr. Tuero para agendar mi evaluación personalizada y asegurar el descuento especial de agosto con facilidades de pago antes de que se acaben los turnos.</td></tr><tr><td>2</td><td>Asistente</td><td>Excelente. Tengo estos próximos turnos: lunes 18 de agosto a las 11:00, 11:30 o 12:00.
-
-Para reservar, es necesario abonar la seña de $10.000 que se descuenta del valor final. Podés transferir al alias alejandro.tuero.
-
-Cuando lo hagas, enviame una captura de pantalla del comprobante (no PDF). Apenas llegue, reservo el horario que elijas.
-
-Cuál de esas opciones te queda mejor?</td></tr></table><h2>Cliente: 5491123569078</h2><table><tr><th>Turno</th><th>Rol</th><th>Mensaje</th></tr><tr><td>1</td><td>Cliente</td><td>Hola, quiero recibir mi consulta básica por WhatsApp para obtener un valor aproximado según el cambio o procedimiento que busco.</td></tr><tr><td>2</td><td>Asistente</td><td>Hola, cómo estás? Soy Camila, la asistente del Dr. Tuero.
-
-Para darte un valor aproximado, necesitaría saber un poco más sobre vos.
-
-Los procedimientos que realiza el doctor van desde los 1.000 a los 10.000 dólares, dependiendo mucho de la anatomía de cada paciente.
-
-Contame, qué zona te gustaría mejorar y qué edad tenés?</td></tr></table>
+<body class="">
+
+    <div class="app-container">
+        <aside class="side-menu">
+            <div class="side-menu-header">
+                <h2>Conversaciones</h2>
+                <button id="menu-close-btn">&times;</button>
+            </div>
+            <div id="conversation-menu"></div>
+            <div class="theme-toggle-container">
+                <span>Tema</span>
+                <button id="theme-toggle-btn">🌙</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="chat-container">
+                <header class="chat-header">
+                    <button id="menu-toggle-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="avatar"></div>
+                    <div class="contact-info">
+                        <div id="contact-name" class="name"></div>
+                        <div class="status">en línea</div>
+                    </div>
+                </header>
+                <main id="chat-messages" class="chat-messages"></main>
+            </div>
+        </main>
+    </div>
+    <div class="overlay"></div>
+    
+    <script>
+        // --- Elementos del DOM ---
+        const chatMessagesContainer = document.getElementById('chat-messages');
+        const contactNameElement = document.getElementById('contact-name');
+        const conversationMenu = document.getElementById('conversation-menu');
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const menuCloseBtn = document.getElementById('menu-close-btn');
+        const overlay = document.querySelector('.overlay');
+        const body = document.body;
+
+        function openMenu() {
+            body.classList.add('menu-open');
+        }
+
+        function closeMenu() {
+            body.classList.remove('menu-open');
+        }
+
+        function renderChat(messagesData) {
+            chatMessagesContainer.innerHTML = '';
+            if (!Array.isArray(messagesData)) {
+                console.error('Error: El JSON debe ser un array de mensajes.');
+                return;
+            }
+            let hour = 8, minute = 41;
+            messagesData.forEach((item, index) => {
+                if (!item.message || !item.message.type || !item.message.content) return;
+                let { type, content } = item.message;
+                const internalTriggerText = "Para dejarla confirmada, falta abonar esa seña.";
+                if (type === 'human' && content.includes(internalTriggerText)) {
+                    content = "El paciente mando foto del comprobante";
+                }
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble ${type}`;
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.textContent = content;
+                if (index > 0 && index % 2 !== 0) {
+                    minute += Math.floor(Math.random() * 2) + 1;
+                    if (minute >= 60) { hour++; minute -= 60; }
+                }
+                const timestamp = document.createElement('div');
+                timestamp.className = 'timestamp';
+                timestamp.textContent = `${hour}:${minute < 10 ? '0' : ''}${minute} pm`;
+                bubble.append(messageContent, timestamp);
+                chatMessagesContainer.appendChild(bubble);
+            });
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+
+        function loadConversation(date, sessionId) {
+            const conversation = conversationsData[date][sessionId];
+            renderChat(conversation);
+            contactNameElement.textContent = sessionId;
+        }
+
+        function populateConversationMenu() {
+            conversationMenu.innerHTML = '';
+            for (const date in conversationsData) {
+                const group = document.createElement('div');
+                group.className = 'conversation-menu-group';
+
+                const dateHeader = document.createElement('div');
+                dateHeader.className = 'date-header';
+                dateHeader.textContent = `Fecha: ${date}`;
+
+                const conversationList = document.createElement('div');
+                conversationList.className = 'conversation-list';
+
+                dateHeader.addEventListener('click', () => {
+                    dateHeader.classList.toggle('open');
+                    conversationList.classList.toggle('open');
+                });
+
+                for (const sessionId in conversationsData[date]) {
+                    const link = document.createElement('a');
+                    link.className = 'conversation-link';
+                    link.textContent = `ID: ${sessionId}`;
+                    link.href = '#';
+                    link.dataset.date = date;
+                    link.dataset.sessionId = sessionId;
+
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('.conversation-link.active').forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                        loadConversation(date, sessionId);
+                    });
+                    conversationList.appendChild(link);
+                }
+                group.append(dateHeader, conversationList);
+                conversationMenu.appendChild(group);
+            }
+        }
+
+        // --- Event Listeners ---
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            themeToggleBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+        });
+
+        menuToggleBtn.addEventListener('click', openMenu);
+        menuCloseBtn.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu);
+
+        conversationMenu.addEventListener('click', (e) => {
+            if (e.target.classList.contains('conversation-link')) {
+                closeMenu();
+            }
+        });
+        
+        // --- Carga Inicial ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateConversationMenu();
+            const firstLink = document.querySelector('.conversation-link');
+            if (firstLink) {
+                firstLink.classList.add('active');
+                const { date, sessionId } = firstLink.dataset;
+                loadConversation(date, sessionId);
+                firstLink.closest('.conversation-list').classList.add('open');
+                firstLink.closest('.conversation-menu-group').querySelector('.date-header').classList.add('open');
+            }
+        });
+    </script>
+
+    <!-- Asegúrate de que este archivo exista y esté en la misma carpeta -->
+    <script src="conversaciones.js"></script>
 </body>
 </html>
