@@ -1545,6 +1545,83 @@ const conversationsData = {
                 }
             }
         ]
+    },
+"27/08/25": {
+        "5491150005894": [
+            {"message":{"type":"human","content":"Hola, quiero recibir un valor aproximado según el procedimiento que necesito"}},
+            {"message":{"type":"ai","content":"Hola, ¿cómo estás? Soy Camila.\nLos valores dependen de la zona y tu edad. Decime cuáles son y te doy un rango orientativo."}},
+            {"message":{"type":"human","content":"Tengo 22 años"}},
+            {"message":{"type":"ai","content":"Gracias. Decime ahora la zona o procedimiento que te interesa."}},
+            {"message":{"type":"human","content":"Tengo los pechos caídos después de ser mamá y quería levantarlo\nNo quiero agregarme nada solo hacer un levantamiento"}},
+            {"message":{"type":"ai","content":"Para mamas, el rango es de U$S 2.000 a 4.000.\nEl valor final se define en consulta según tu anatomía. El Dr. ofrece facilidades de pago."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Quería saber si pudiste ver las fechas para la consulta o si te quedó alguna duda pendiente. Saludos."}}
+        ],
+        "5491126945257": [
+            {"message":{"type":"human","content":"Hola, quiero recibir un valor aproximado según el procedimiento que necesito"}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nLos valores dependen de zona y edad. Decime zona y edad y te doy un rango orientativo."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Quería saber si pudiste ver las fechas para la consulta o si te quedó alguna duda pendiente. Saludos."}}
+        ],
+        "5493329610793": [
+            {"message":{"type":"human","content":"Hola mi nombre es Oriana,soy de Baradero y quiero agendar una consulta con el Dr. Tuero. para recibir todos los detalles sobre el procedimiento que busco. En este caso seria para consulta por implantes mamarios.\nQuisiera saber los días y horarios disponibles para hacer la consulta. Gracias"}},
+            {"message":{"type":"ai","content":"Hola Oriana, ¿cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nPara pasarte los horarios, necesitaría saber tu edad por favor."}},
+            {"message":{"type":"human","content":"Tengo 26 años. Disculpa por el horario"}},
+            {"message":{"type":"ai","content":"Bárbaro. Para darte los horarios, decime qué te queda mejor: San Pedro, CABA o virtual."}},
+            {"message":{"type":"human","content":"San Pedro por favor!!\nTe consulto sin compromiso hay posibilidad de saber un costo aproximado para ya ir con una idea?"}},
+            {"message":{"type":"ai","content":"Claro. Para mamas el rango es de U$S 2.000 a 4.000. El valor final se define en la consulta.\n\nEl Dr. ofrece facilidades de pago. Si te sirve, te paso el link para agendar en San Pedro."}},
+            {"message":{"type":"human","content":"Genial!!\nSi si pasame el link por favor!"}},
+            {"message":{"type":"ai","content":"Perfecto. Agendá día y horario acá: https://dr-tuero.com/agenda-sanpedro\n\nLa dirección es Carlos Pellegrini 1525.\n\nCuando te agendes, avisame por acá la fecha y hora que elegiste."}}
+        ],
+        "5493887469155": [
+            {"message":{"type":"human","content":"Hola, quiero agendar una consulta con el Dr. Tuero. para recibir todos los detalles sobre el procedimiento que busco."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nNecesitaria tu nombre completo, edad y zona/procedimiento de interés, así puedo ayudarte mejor."}}
+        ],
+        "5491151430919": [
+            {"message":{"type":"human","content":"Hola, quiero agendar una consulta con el Dr. Tuero. para recibir todos los detalles sobre el procedimiento que busco."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nNecesitaría tu nombre completo, edad y zona/procedimiento de interés, así puedo ayudarte mejor."}},
+            {"message":{"type":"human","content":"Zaira Rodriguez\n26\nSan justo"}},
+            {"message":{"type":"ai","content":"Gracias, Zaira.\n\n¿Qué procedimiento o zona del cuerpo te interesa consultar?"}},
+            {"message":{"type":"human","content":"Bubis"}},
+            {"message":{"type":"ai","content":"Bárbaro, Zaira.\n\nPara la consulta con el Dr. Tuero, ¿preferís que sea presencial o virtual?"}}
+        ],
+        "5491162597712": [
+            {"message":{"type":"human","content":"Hola, quiero agendar una consulta con el Dr. Tuero. para recibir todos los detalles sobre el procedimiento que busco."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nNecesitaria tu nombre completo, edad y zona/procedimiento de interés, así puedo ayudarte mejor."}},
+            {"message":{"type":"human","content":"Gimena, 37 años, zona sur avellaneda. Implantes mamarios"}},
+            {"message":{"type":"ai","content":"Perfecto, Gimena. Preferís una consulta presencial o virtual?"}},
+            {"message":{"type":"human","content":"Presencial. Donde esta y cuanto vale?"}},
+            {"message":{"type":"ai","content":"El rango para mamas es U$S 2.000–4.000. El Dr. ofrece facilidades de pago.\n\nPara la consulta presencial, preferís San Pedro o CABA?"}},
+            {"message":{"type":"human","content":"Caba"}},
+            {"message":{"type":"ai","content":"Perfecto. Agendá día y horario acá: https://dr-tuero.com/agenda-caba\nLa dirección es Av. Córdoba 4190 (Palermo).\n\nCuando te agendes, avisame por acá la fecha y hora que elegiste."}},
+            {"message":{"type":"human","content":"La consulta tiene algún costo?"}},
+            {"message":{"type":"ai","content":"Sí, la consulta tiene un valor de $10.000.\n\nSi después avanzás con un procedimiento, se reintegra del total."}},
+            {"message":{"type":"human","content":"Perfecto. Miro la agenda! Gracias"}},
+            {"message":{"type":"ai","content":"Dale, genial. Avisame por acá cuando tengas la fecha y hora."}}
+        ],
+        "5491138304369": [
+            {"message":{"type":"human","content":"Hola, quiero agendar una consulta con el Dr. Tuero. para recibir todos los detalles sobre el procedimiento que busco."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nNecesitaría tu nombre completo, edad y zona/procedimiento de interés, así puedo ayudarte mejor."}}
+        ],
+        "5491151558418": [
+            {"message":{"type":"human","content":"Hola, quiero agendar una consulta con el Dr. Tuero. para recibir todos los detalles sobre el procedimiento que busco."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nNecesitaría tu nombre completo, edad y zona/procedimiento de interés, así puedo ayudarte mejor."}},
+            {"message":{"type":"human","content":"Leonela Arias 24 años, aumento mamario"}},
+            {"message":{"type":"ai","content":"Gracias, Leonela. ¿Preferís una consulta presencial o virtual?"}},
+            {"message":{"type":"human","content":"Como seria virtual"}},
+            {"message":{"type":"ai","content":"Es una videollamada con el Dr. para evaluarte y resolver dudas.\n\n¿Te gustaría agendar una?"}},
+            {"message":{"type":"human","content":"Y presencial donde seria"}},
+            {"message":{"type":"ai","content":"Atendemos en San Pedro o en CABA (Palermo).\n\n¿Cuál de las dos sedes te quedaría mejor?"}},
+            {"message":{"type":"human","content":"En palerml"}},
+            {"message":{"type":"ai","content":"Perfecto. Agendá día y horario acá: https://dr-tuero.com/agenda-caba\nLa dirección es Av. Córdoba 4190 (Palermo).\n\nCuando te agendes, avisame por acá la fecha y hora que elegiste."}}
+        ],
+        "5493417434047": [
+            {"message":{"type":"human","content":"Hola, quiero agendar una consulta con el Dr. Tuero. para recibir todos los detalles sobre el procedimiento que busco."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nNecesitaría tu nombre completo, edad y zona/procedimiento de interés, así puedo ayudarte mejor."}},
+            {"message":{"type":"human","content":"Hola buenas noches\nSoy de rosario quería saber si puedo saber sobre precio y procedimiento, puede ser ?"}},
+            {"message":{"type":"ai","content":"Claro. Los valores dependen de la zona y tu edad.\n\nDecime eso y te doy un rango orientativo."}},
+            {"message":{"type":"human","content":"Genial , tengo 21 años, de la zona que sería ? \nÓsea quiero hacerme pechos y no tengo nada poco y nada jaja y quiero ponerme unas grandes a lo que tengo\nTendría que pasarte alguna foto de cómo tengo y como las quiero o no es necesario\nNo sabría muy bien sobre los tamaños y tiempo que tengo que estar allá\nSoy de rosario"}},
+            {"message":{"type":"ai","content":"El tamaño y el plan lo define el Dr. en la consulta. No es necesario que me envíes fotos por acá.\n\nPara mamas, el rango es de U$S 2.000 a 4.000. El Dr. ofrece facilidades de pago.\n\nEl valor final se ajusta en la consulta. Siendo de Rosario, ¿te sirve una consulta virtual?"}}
+        ]
     }
-};
+}
+
 
