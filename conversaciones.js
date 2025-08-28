@@ -1546,6 +1546,45 @@ const conversationsData = {
             }
         ]
     },
+"26/08/25": {
+        "5491125599241": [
+            {"message":{"type":"human","content":"Hola, quiero recibir un valor aproximado según el procedimiento que necesito"}},
+            {"message":{"type":"ai","content":"Hola, ¿cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nLos valores dependen de la zona y edad. Decime eso y te doy un rango orientativo."}},
+            {"message":{"type":"human","content":"Zona mamaria tengo 18"}},
+            {"message":{"type":"ai","content":"Para mamas, el rango es de U$S 2.000 a 4.000.\n\nEl valor final se define en consulta. El Dr. ofrece facilidades de pago."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Quería saber si pudiste ver las fechas para la consulta o si te quedó alguna duda pendiente. Saludos."}}
+        ],
+        "5491125852320": [
+            {"message":{"type":"human","content":"Hola, quiero recibir un valor aproximado según el procedimiento que necesito"}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nPara darte un rango, necesito saber tu edad y la zona o procedimiento que te interesa."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Quería saber si pudiste ver las fechas para la consulta o si te quedó alguna duda pendiente. Saludos."}}
+        ],
+        "5492920709695": [
+            {"message":{"type":"human","content":"Hola, quiero coordinar mi consulta en CABA y confirmar mi turno con el Dr. Tuero."}},
+            {"message":{"type":"ai","content":"Hola, ¿cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nPara ayudarte, necesito tu nombre completo, edad y la zona o procedimiento de interés."}},
+            {"message":{"type":"human","content":"yo quiero una consulta\nen caba"}},
+            {"message":{"type":"ai","content":"Ok, CABA. Para seguir, necesito tu nombre completo, edad y la zona de interés."}},
+            {"message":{"type":"human","content":"en caba"}},
+            {"message":{"type":"ai","content":"Entendido, la consulta es en CABA.\n\nDecime, ¿qué zona o procedimiento te interesa evaluar?"}},
+            {"message":{"type":"ai","content":"Perfecto, por favor completá tu nombre, edad y la zona o procedimiento que te interesa así podemos coordinar el turno."}}
+        ],
+        "5491149759818": [
+            {"message":{"type":"human","content":"Hola, quiero recibir un valor aproximado según el procedimiento que necesito"}},
+            {"message":{"type":"ai","content":"Hola, ¿cómo estás? Soy Camila, asistente del Dr. Tuero.\n\nPara darte un rango, necesito saber la zona a tratar y tu edad."}},
+            {"message":{"type":"human","content":"Hola buenas noches. Quisiera información para hacer las lolas. Tengo 32años\nhola buenas noches. hace años que me gustaría poder operarme las lolas pero lamentablemente nunca puede juntar el dinero para poder hacerlo 😞 quisiera saber si me pueden dar una oportunidad para poder ir pagando. desdé ya muchas gracias"}},
+            {"message":{"type":"ai","content":"Hola, gracias por compartir tu situación.\n\nEl Dr. ofrece facilidades de pago. Los detalles se definen en la consulta.\n\n¿Te gustaría que veamos cómo agendar una reunión con él?"}},
+            {"message":{"type":"human","content":"Si muchas gracias"}},
+            {"message":{"type":"ai","content":"Perfecto. ¿Preferís una consulta presencial o virtual?"}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Quería saber si pudiste ver las fechas para la consulta o si te quedó alguna duda pendiente. Saludos."}}
+        ],
+        "5493795119108": [
+            {"message":{"type":"human","content":"Hola, quiero recibir un valor aproximado según el procedimiento que necesito"}},
+            {"message":{"type":"ai","content":"Hola, ¿cómo estás? Soy Camila, asistente del Dr. Tuero.\nPara darte un rango, decime por favor tu edad y la zona o procedimiento que te interesa."}},
+            {"message":{"type":"human","content":"27\nAumento de mamss"}},
+            {"message":{"type":"ai","content":"Bárbaro. Para aumento de mamas, el rango es de U$S 2.000 a 4.000.\n\nEl valor final lo define el Dr. en la consulta, según tu anatomía.\n\nAdemás, el Dr. ofrece facilidades de pago. Si te sirve, podemos ver de agendar."}},
+            {"message":{"type":"ai","content":"Hola, cómo estás? Quería saber si pudiste ver las fechas para la consulta o si te quedó alguna duda pendiente. Saludos."}}
+        ]
+    },
 "27/08/25": {
         "5491150005894": [
             {"message":{"type":"human","content":"Hola, quiero recibir un valor aproximado según el procedimiento que necesito"}},
