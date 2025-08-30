@@ -154,7 +154,7 @@
             overflow: hidden;
             transition: max-height 0.3s ease-out;
         }
-        .conversation-list.open { max-height: 500px; transition: max-height 0.5s ease-in; }
+        .conversation-list.open { transition: max-height 0.5s ease-in; }
         .conversation-link {
             display: block; padding: 8px 10px; cursor: pointer;
             border-radius: var(--radius); text-decoration: none;
@@ -386,43 +386,58 @@
         }
 
         function populateConversationMenu() {
-            conversationMenu.innerHTML = '';
-            for (const date in conversationsData) {
-                const group = document.createElement('div');
-                group.className = 'conversation-menu-group';
+    conversationMenu.innerHTML = '';
+    for (const date in conversationsData) {
+        const group = document.createElement('div');
+        group.className = 'conversation-menu-group';
 
-                const dateHeader = document.createElement('div');
-                dateHeader.className = 'date-header';
-                dateHeader.textContent = `Fecha: ${date}`;
+        const dateHeader = document.createElement('div');
+        dateHeader.className = 'date-header';
+        dateHeader.textContent = `Fecha: ${date}`;
 
-                const conversationList = document.createElement('div');
-                conversationList.className = 'conversation-list';
+        const conversationList = document.createElement('div');
+        conversationList.className = 'conversation-list';
 
-                dateHeader.addEventListener('click', () => {
-                    dateHeader.classList.toggle('open');
-                    conversationList.classList.toggle('open');
-                });
+        // --- INICIO DE LA NUEVA LÓGICA DE ANIMACIÓN ---
+        dateHeader.addEventListener('click', () => {
+            const isOpen = dateHeader.classList.contains('open');
+            
+            dateHeader.classList.toggle('open');
+            conversationList.classList.toggle('open');
 
-                for (const sessionId in conversationsData[date]) {
-                    const link = document.createElement('a');
-                    link.className = 'conversation-link';
-                    link.textContent = `ID: ${sessionId}`;
-                    link.href = '#';
-                    link.dataset.date = date;
-                    link.dataset.sessionId = sessionId;
-
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        document.querySelectorAll('.conversation-link.active').forEach(l => l.classList.remove('active'));
-                        link.classList.add('active');
-                        loadConversation(date, sessionId);
-                    });
-                    conversationList.appendChild(link);
-                }
-                group.append(dateHeader, conversationList);
-                conversationMenu.appendChild(group);
+            if (!isOpen) {
+                // Si se está abriendo:
+                // 1. Obtenemos la altura total que necesita la lista para mostrar todo su contenido.
+                // 2. Asignamos esa altura como 'max-height' para que la animación CSS funcione.
+                conversationList.style.maxHeight = conversationList.scrollHeight + "px";
+            } else {
+                // Si se está cerrando, volvemos a poner max-height en null (o 0)
+                // para que se active la animación de cierre.
+                conversationList.style.maxHeight = null;
             }
+        });
+        // --- FIN DE LA NUEVA LÓGICA DE ANIMACIÓN ---
+
+        for (const sessionId in conversationsData[date]) {
+            const link = document.createElement('a');
+            link.className = 'conversation-link';
+            link.textContent = `ID: ${sessionId}`;
+            link.href = '#';
+            link.dataset.date = date;
+            link.dataset.sessionId = sessionId;
+
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.conversation-link.active').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                loadConversation(date, sessionId);
+            });
+            conversationList.appendChild(link);
         }
+        group.append(dateHeader, conversationList);
+        conversationMenu.appendChild(group);
+    }
+}
 
         // --- Event Listeners ---
         themeToggleBtn.addEventListener('click', () => {
